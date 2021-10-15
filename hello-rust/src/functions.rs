@@ -7,8 +7,6 @@ pub fn run() {
     let n3: i32 = 10;
     let add_nums = |n1: i32, n2: i32| n1 + n2 + n3; //can use n3 because in this scope
     println!("C sum {}", add_nums(3, 3));
-
-    //https://youtu.be/zF34dRivLOw?t=4755
 }
 
 fn greeting(greet: &str, name: &str) {
