@@ -12,18 +12,34 @@ use piston::window::WindowSettings;
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
     rotation: f64,  // Rotation for the square.
+    x: f64,
+    y: f64,
+    vy: f64,
+    frame_count: i64,
 }
 
 impl App {
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
+    
 
         const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
         const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
-        let (x, y) = (args.window_size[0] / 2.0, args.window_size[1] / 2.0);
+        //let (x, y) = (args.window_size[0] / 2.0, args.window_size[1] / 2.0);
+        
+        self.vy+=10.0*args.ext_dt;
+        self.y+=self.vy;
+
+        if self.y>400.0 {
+            self.vy*=-1.0;
+        }
+        let x=self.x;
+        let y=self.y;
+
+        println!("{}", 1.0/args.ext_dt);
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
@@ -42,7 +58,7 @@ impl App {
 
     fn update(&mut self, args: &UpdateArgs) {
         // Rotate 2 radians per second.
-        self.rotation += 2.0 * args.dt;
+        //self.rotation += 2.0 * args.dt;
     }
 }
 
@@ -51,7 +67,7 @@ fn main() {
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
-    let mut window: Window = WindowSettings::new("spinning-square", [200, 200])
+    let mut window: Window = WindowSettings::new("spinning-square", [400,400])
         .graphics_api(opengl)
         .exit_on_esc(true)
         .build()
@@ -61,6 +77,10 @@ fn main() {
     let mut app = App {
         gl: GlGraphics::new(opengl),
         rotation: 0.0,
+        x: 200.0,
+        y: 200.0,
+        vy: 0.0,
+        frame_count: 0,
     };
 
     let mut events = Events::new(EventSettings::new());
